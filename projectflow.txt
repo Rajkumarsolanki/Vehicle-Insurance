@@ -16,7 +16,12 @@
 8. Go to "network access" and add ip address - "0.0.0.0/0" so that we can access it from anywhere
 9. Go back to project >> "Get Connection String" >> "Drivers" >> {Driver:Python, Version:3.6 or later}
     >> copy and save the connection string with you(replace password). >> Done.
-10. Create folder "notebook" >> create file "mongoDB_demo.ipynb" >> select kernel>python kernal>visa >>
-11. Kaggle Data link: https://www.kaggle.com/datasets/moro23/easyvisa-dataset
+10. Create folder "notebook" >> do step 11 >> create file "mongoDB_demo.ipynb" >> select kernel>python kernal> vehicle>>
+11. Dataset added to notebook folder
 12. Push your data to mongoDB database from your python notebook.
 13. Go to mongoDB Atlas >> Database >>  browse collection >> see your data in key value format 
+
+------------------------------------logging, exception and notebook----------------------------------------
+14. Write the logger file and test it on demo.py
+15. Write the exception file and test it on demo.py
+16. EDA and feature Engg notebook added.
