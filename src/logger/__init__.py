@@ -7,7 +7,7 @@ from datetime import datetime
 # Constant for log configuration
 LOG_DIR = 'logs'
 LOG_FILE = f"{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}.log"
-MAX_LOG_SIZE = 5 * 1024 * 1024 #5MB
+MAX_LOG_SIZE = 5 * 1024 * 1024 #5 MB
 BACKUP_COUNT = 3 #Number of backup log files to keep
 
 # Construct log file path
