@@ -47,8 +47,8 @@ class MyModel:
             logging.error("Error occurred in predict method", exc_info=True)
             raise MyException(e, sys) from e
         
-        def __repr__(self):
+    def __repr__(self):
             return f"{type(self.trained_model_object).__name__}()"
         
-        def __str__(self):
+    def __str__(self):
             return f"{type(self.trained_model_object).__name__}()"
