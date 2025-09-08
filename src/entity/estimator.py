@@ -1,54 +1,58 @@
 import sys
-
-import pandas as pd
-from pandas import DataFrame
-from sklearn.pipeline import Pipeline
-
-from src.exception import MyException
 from src.logger import logging
+from src.exception import MyException
+import pandas as pd
 
-class TargetValueMapping:
-    def __init__(self):
-        self.yes: int = 0
-        self.no: int = 1
-    def _asdict(self):
-        return self.__dict__
-    def reverse_mapping(self):
-        mapping_response = self._asdict()
-        return dict(zip(mapping_response.values(), mapping_response.keys()))
-    
+
 class MyModel:
-    def __init__(self, preprocessing_object: Pipeline, trained_model_object: object):
+    def __init__(self, bucket_name: str, model_path: str):
         """
-        :param preprocessing_object: Input Object of preprocessor
-        :param trained_model_object: Input Object of trained model
+        Loads preprocessing object and trained model object from S3
         """
-        self.preprocessing_object = preprocessing_object
-        self.trained_model_object = trained_model_object
+        try:
+            from src.configuration.aws_connection import S3Client
+            import pickle
 
-    def predict(self, dataframe: pd.DataFrame) -> DataFrame:
+            s3 = S3Client()
+            model_obj = s3.read_object(bucket_name, model_path, make_readable=False)
+
+            self.model = pickle.loads(model_obj)
+            self.preprocessing_object = self.model["preprocessor"]
+            self.trained_model_object = self.model["model"]
+
+            logging.info("Model and preprocessor loaded successfully from S3")
+
+        except Exception as e:
+            raise MyException(e, sys) from e
+
+    def predict(self, dataframe: pd.DataFrame):
         """
-        Function accepts preprocessed inputs (with all custom transformations already applied),
-        applies scaling using preprocssing_object, and performs prediction on transformed features.
+        Perform prediction with preprocessing alignment
         """
         try:
             logging.info("Starting prediction process.")
 
-            # Step 1: Apply scaling transformations using the pre-trained preprocessing object
+            # ✅ Ensure all expected columns exist
+            if hasattr(self.preprocessing_object, "feature_names_in_"):
+                expected_cols = list(self.preprocessing_object.feature_names_in_)
+
+                # Add missing columns with default 0
+                for col in expected_cols:
+                    if col not in dataframe.columns:
+                        dataframe[col] = 0
+
+                # Keep only required columns in right order
+                dataframe = dataframe[expected_cols]
+
+            # Step 1: Apply preprocessing
             transformed_feature = self.preprocessing_object.transform(dataframe)
 
-            # Step 2: Perform prediction using the trained model
+            # Step 2: Model prediction
             logging.info("Using the trained model to get predictions")
             predictions = self.trained_model_object.predict(transformed_feature)
 
             return predictions
-        
+
         except Exception as e:
             logging.error("Error occurred in predict method", exc_info=True)
             raise MyException(e, sys) from e
-        
-    def __repr__(self):
-            return f"{type(self.trained_model_object).__name__}()"
-        
-    def __str__(self):
-            return f"{type(self.trained_model_object).__name__}()"
