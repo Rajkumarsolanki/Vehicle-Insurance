@@ -84,7 +84,7 @@
             MODEL_BUCKET_NAME = "rajkumar-model-mlopsproj"
             MODEL_PUSHER_S3_KEY = "model-registry"
       * Go to S3 service >> Create bucket >> Region: us-east-1 >> General purpose >>
-        Bucket Name: "mrajkumar-model-mlopsproj" >> uncheck: "Block all public access" and acknowledge >>
+        Bucket Name: "rajkumar-model-mlopsproj" >> uncheck: "Block all public access" and acknowledge >>
         Hit Create Bucket
       * Now inside "src.aws_storage" code needs to be added for the configurations needed to pull 
         and push model from AWS S3 bucket. 

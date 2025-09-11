@@ -36,6 +36,7 @@ list_of_files = [
     "app.py",
     "requirements.txt",
     "Dockerfile",
+    ".dockerignore",
     "demo.py",
     "setup.py",
     "pyproject.toml",
